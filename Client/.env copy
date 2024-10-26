@@ -1,0 +1,6 @@
+VITE_FETCH_USER_TOKEN_URL=http://localhost:1234/user
+VITE_FETCH_BLOG_DATA=http://localhost:1234/blogdata
+VITE_ADD_BLOG=http://localhost:1234/addblog
+VITE_USER_LOGIN=http://localhost:1234/login
+VITE_USER_REGISTER=http://localhost:1234/register
+
