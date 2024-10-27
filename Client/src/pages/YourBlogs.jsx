@@ -10,7 +10,7 @@ function YourBlogs() {
     const fetchPersonalBlog = async () => {
       try {
         const response = await fetch(
-          `http://localhost:1234/userblog/${userdata.username}`,
+          `https://blogapp-ag2a.onrender.com/userblog/${userdata.username}`,
           {
             method: 'GET',
             headers: {
