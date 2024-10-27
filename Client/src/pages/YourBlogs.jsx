@@ -35,7 +35,7 @@ function YourBlogs() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:1234/delete/${id}`, {
+      const response = await fetch(`https://blogapp-ag2a.onrender.com/delete/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
