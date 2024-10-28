@@ -39,7 +39,7 @@ function HomePage() {
 
   }, [Blogs]);
 
-
+console.log(loggedIn)
 
   
   return (
@@ -52,9 +52,13 @@ function HomePage() {
         <div className="text-center text-white">
           <h1 className="text-6xl font-bold mb-4">Welcome to Our Blog</h1>
           <p className="text-xl mb-8">Share your thoughts with the world</p>
-          <a href="/create-blog" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
-            Write a Blog
+          {
+            (loggedIn)? <a href="/create-blog" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
+              Write a Blog
+            </a>:<a href="/login" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
+            Login and Write a Blog
           </a>
+          }
         </div>
       </header>
 

@@ -1,19 +1,17 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Navigate} from "react-router-dom"
 import { BlogContext } from "../Context/UserContext";
-import axios from "axios"; 
+import axios from "axios";
 
 function CreateBlog() {
   const [newTitle, setNewTitle] = useState("");
   const [newBody, setNewBody] = useState("");
-  const [imageFile, setImageFile] = useState(null); 
+  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const { userdata , loggedIn} = useContext(BlogContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { userdata } = useContext(BlogContext);
   const navigate = useNavigate();
 
- 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -26,20 +24,16 @@ function CreateBlog() {
     }
   };
 
-
   const uploadImageToCloudinary = async () => {
     if (!imageFile) return null;
 
     const formData = new FormData();
     formData.append("file", imageFile);
-    formData.append("upload_preset", "blog_preset"); 
-    formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME); 
+    formData.append("upload_preset", "blog_preset");
+    formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
 
     try {
-      const response = await axios.post(
-        import.meta.env.VITE_IMG_UPLOAD_URL, 
-        formData
-      );
+      const response = await axios.post(import.meta.env.VITE_IMG_UPLOAD_URL, formData);
       return response.data.secure_url;
     } catch (error) {
       console.error("Cloudinary upload error:", error);
@@ -48,13 +42,23 @@ function CreateBlog() {
     }
   };
 
- 
   const handleAddBlog = async (e) => {
     e.preventDefault();
+
+    const confirmAdd = window.confirm(
+      "Are you sure you want to add this blog?"
+    );
+    if (!confirmAdd) {
+      setIsSubmitting(false); 
+      return;
+    }
+
+    setIsSubmitting(true); 
 
     const uploadedImageUrl = await uploadImageToCloudinary();
     if (!uploadedImageUrl) {
       window.alert("Please upload an image before submitting.");
+      setIsSubmitting(false); 
       return;
     }
 
@@ -70,7 +74,7 @@ function CreateBlog() {
       }),
       title: newTitle,
       body: newBody,
-      imageUrl: uploadedImageUrl, 
+      imageUrl: uploadedImageUrl,
       id: Date.now(),
       user: userdata.username,
     };
@@ -90,19 +94,23 @@ function CreateBlog() {
       } else {
         const errorData = await response.json();
         window.alert(`Failed to Add Blog: ${errorData.message}`);
+        setIsSubmitting(false); 
       }
     } catch (error) {
       window.alert(`Failed to Add Blog: ${error.message}`);
+      setIsSubmitting(false); 
     }
 
+ 
     setNewTitle("");
     setNewBody("");
     setImagePreview("");
     setImageFile(null);
-    setImageUrl("");
+    setIsSubmitting(false); 
   };
+
   return (
-  <div className="w-full flex justify-center items-center min-h-screen bg-blue-50 p-4">
+    <div className="w-full flex justify-center items-center min-h-screen bg-blue-50 p-4">
       <form
         onSubmit={handleAddBlog}
         className="w-full max-w-lg bg-blue-100 p-8 rounded-lg shadow-lg border border-blue-200"
@@ -163,9 +171,12 @@ function CreateBlog() {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            className={`w-full py-3 bg-blue-600 text-white rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
+            disabled={isSubmitting} 
           >
-            ADD
+            {isSubmitting ? "Submitting..." : "ADD"}
           </button>
         </div>
       </form>

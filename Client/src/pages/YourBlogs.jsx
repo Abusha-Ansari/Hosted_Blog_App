@@ -34,6 +34,15 @@ function YourBlogs() {
   };
 
   const handleDelete = async (id) => {
+   
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this blog? This action cannot be undone.'
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
     try {
       const response = await fetch(`https://blogapp-ag2a.onrender.com/delete/${id}`, {
         method: 'DELETE',
@@ -43,13 +52,16 @@ function YourBlogs() {
           (currItem) => currItem._id !== id
         );
         setpersonalBlogs(newBlogs);
+        window.alert('Blog deleted successfully!');
       } else {
         console.error('Failed to delete blog.');
       }
     } catch (error) {
       console.error('Error deleting blog:', error);
+      window.alert('Error deleting blog. Please try again.');
     }
   };
+
 
   return (
     <>
