@@ -39,7 +39,7 @@ function HomePage() {
 
   }, [Blogs]);
 
-console.log(loggedIn)
+
 
   
   return (
